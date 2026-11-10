@@ -7,22 +7,18 @@ const {isLoggedIn, saveRedirectUrl, validateSignup} = require("../middleware.js"
 
 const userController = require("../controllers/users.js")
 
-// Show signup form
-router.get("/signup", userController.renderSignupForm);
-
-// Handle signup
-router.post("/signup", validateSignup, userController.signup);
-
+router.route("/signup")
+          .get( userController.renderSignupForm)
+          .post( validateSignup, userController.signup);
 
 //get login page
-router.get("/login", userController.renderloginForm)
 
-//POST req on login page
-router.post("/login", saveRedirectUrl,
-    passport.authenticate("local", {failureRedirect : "/login" , failureFlash : true}), 
-    userController.login
-   ) 
-
+router.route("/login")
+          .get( userController.renderloginForm)
+          .post( saveRedirectUrl,
+            passport.authenticate("local", {failureRedirect : "/login" , failureFlash : true}), 
+            userController.login
+        ) 
 
 //LOGOUT
 router.get("/logout", userController.logout)

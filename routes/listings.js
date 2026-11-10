@@ -8,10 +8,12 @@ const {isLoggedIn, isOwner, validateListing} = require("../middleware.js");
 
 const listingController = require("../controllers/listings.js");
 
-
+router.route("/")
+          .get(listingController.index )
+          .post(isLoggedIn, validateListing, listingController.createListing);
 
 // index route
-router.get("/",listingController.index );
+// router.get("/",listingController.index );
 
 
 //new route - form to crete new lisitng
@@ -22,20 +24,10 @@ router.get("/new", isLoggedIn, listingController.renderNewForm);
 router.get("/:id/edit",  isLoggedIn , isOwner, listingController.updateListing);
 
 
-// show -route
-router.get("/:id", listingController.showListings);
-
-
-// Update route
-router.put("/:id", isLoggedIn, isOwner, validateListing, listingController.renderEditForm );
-
-
-//create route
-router.post("/", isLoggedIn, validateListing, listingController.createListing);
-
-
-//delete route
-router.delete("/:id",isLoggedIn, isOwner, listingController.destroyListing);
+router.route("/:id")
+          .get( listingController.showListings)
+          .put( isLoggedIn, isOwner, validateListing, listingController.renderEditForm )
+          .delete(isLoggedIn, isOwner, listingController.destroyListing);
 
 
 module.exports = router
