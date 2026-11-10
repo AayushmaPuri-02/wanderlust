@@ -6,119 +6,36 @@ const { listingSchema , reviewSchema} = require("../schema.js");
 const mongoose = require("mongoose");
 const {isLoggedIn, isOwner, validateListing} = require("../middleware.js");
 
+const listingController = require("../controllers/listings.js");
+
 
 
 // index route
-router.get("/", async (req, res) => {
-    const allListings = await Listing.find({});
-    
-    //console.log(allListings);      // allListings is an array of objects.
-    res.render("listings/index.ejs", { allListings });
-});
+router.get("/",listingController.index );
 
 
 //new route - form to crete new lisitng
-router.get("/new", isLoggedIn, (req, res) => {
-    console.log(req.user);
-
-    res.render("listings/new.ejs");
-});
+router.get("/new", isLoggedIn, listingController.renderNewForm);
 
 
 // edit route
-router.get("/:id/edit",  isLoggedIn , isOwner, async (req, res) => {
-    let { id } = req.params;
-
-    if (!mongoose.isValidObjectId(id)) {
-        throw new ExpressError(400, "Invalid listing ID");
-    }
-
-    const listing = await Listing.findById(id);
-
-    if (!listing) {
-        // throw new ExpressError(404, "Listing not found");
-          req.flash("error", "Listing not found");
-         return res.redirect("/listings");
-    }
-
-    res.render("listings/edit.ejs", { listing });
-});
+router.get("/:id/edit",  isLoggedIn , isOwner, listingController.updateListing);
 
 
 // show -route
-router.get("/:id", async (req, res) => {
-    let { id } = req.params;
-
-    if (!mongoose.isValidObjectId(id)) {
-        throw new ExpressError(400, "Invalid listing ID");
-    }
-
-    const listing = await Listing.findById(id).populate({path : "reviews", populate :{path : "author"}}).populate("owner");
-    console.log(listing);
-    if (!listing) {
-        // throw new ExpressError(404, "Listing not found");
-        req.flash("error", "Listing not found");
-        return  res.redirect("/listings");
-    }
-
-    res.render("listings/show.ejs", { listing });
-});
+router.get("/:id", listingController.showListings);
 
 
 // Update route
-router.put("/:id", isLoggedIn, isOwner, validateListing, async (req, res) => {
-    let { id } = req.params;
-
-    if (!mongoose.isValidObjectId(id)) {
-        throw new ExpressError(400, "Invalid listing ID");
-    }
-
-
-    const updatedListing = await Listing.findByIdAndUpdate(
-        id,
-        { ...req.body.listing },
-        { runValidators: true }
-    );
-
-    if (!updatedListing) {
-        throw new ExpressError(404, "Listing not found");
-    }
-     req.flash("success", "Listing updated!")
-    res.redirect(`/listings/${id}`);
-});
+router.put("/:id", isLoggedIn, isOwner, validateListing, listingController.renderEditForm );
 
 
 //create route
-router.post("/", isLoggedIn, validateListing, async (req, res) => {
-
-    //req.body is an object { with the fields}
-    //let {title, description, image, price, country, location} = req.body;
-    //instead of this we can send and object from the form rather than individual value
-
-    let newListing = new Listing(req.body.listing);
-    newListing.owner = req.user._id;        //to create a owner
-    await newListing.save();
-    req.flash("success", "New listing saved")
-    res.redirect("/listings");
-});
+router.post("/", isLoggedIn, validateListing, listingController.createListing);
 
 
 //delete route
-router.delete("/:id",isLoggedIn, isOwner, async (req, res) => {
-    let { id } = req.params;
-
-    if (!mongoose.isValidObjectId(id)) {
-        throw new ExpressError(400, "Invalid listing ID");
-    }
-
-    let deletedListing = await Listing.findByIdAndDelete(id);
-
-    if (!deletedListing) {
-        throw new ExpressError(404, "Listing not found");
-    }
-    req.flash("success", "Listing deleted!");
-    res.redirect("/listings");
-});
+router.delete("/:id",isLoggedIn, isOwner, listingController.destroyListing);
 
 
 module.exports = router

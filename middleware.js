@@ -1,6 +1,6 @@
 const Listing = require("./models/listing");
 const ExpressError = require("./utils/ExpressError");
-const { listingSchema , reviewSchema} = require("./schema.js");
+const { listingSchema , reviewSchema, userSchema} = require("./schema.js");
 const Review = require("./models/review.js")
 
 
@@ -73,5 +73,28 @@ module.exports.isReviewAuthor = async (req, res, next) => {
         req.flash("error", "Permission denied: You did not create this review");
         return res.redirect(`/listings/${id}`);
     }
+    next();
+};
+
+module.exports.validateSignup = (req, res, next) => {
+    const { error, value } = userSchema.validate(req.body, {
+        abortEarly: false
+    });
+    if (error) {
+        const message = error.details
+            .map((el) => el.message)
+            .join(", ");
+
+        // Preserve username and email, but never the password
+        req.session.formData = {
+            username: typeof req.body.username === "string" ? req.body.username : "",
+            email: typeof req.body.email === "string" ? req.body.email : ""
+        };
+
+        req.flash("error", message);
+        return res.redirect("/signup");
+    }
+
+    req.body = value;
     next();
 };
