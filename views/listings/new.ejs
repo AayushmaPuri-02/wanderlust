@@ -1,0 +1,56 @@
+<% layout('./layouts/boilerplate') -%>
+
+    <br>
+   
+    <div class="row">
+         
+        <div class="col-8 offset-2">
+            <h3>Create a new lisiting</h3>
+   <form method="POST" action="/listings" novalidate class="needs-validation">
+
+    <div class="mb-3">
+            <label for="title" class="form-label">Title : </label>
+            <input name="listing[title]" placeholder="Add the title" type="text"  class="form-control" required />
+            <div class="valid-feedback">
+                Looks good!
+            </div>
+            <div class="invalid-feedback">
+                Looks good!
+            </div>
+    </div>
+
+    <div class="mb-3">
+            <label for="description" class="form-label">Description : </label>
+            <textarea name="listing[description]" placeholder="enter description" class="form-control" required></textarea>
+            <div class="invalid-feedback">
+                provide proper diescription
+      </div>
+    </div>
+
+    <div class="mb-3">
+         <label for="image" class="form-label">Image Link : </label>
+          <input name="listing[image]" placeholder="enter image URL/Link" type="text"  class="form-control" required/>
+    </div>
+   
+    <div class="row">
+        <div class="mb-3 col-md-4 col-sm-8">
+          <label for="price" class="form-label">Price : </label>
+          <input name="listing[price]" placeholder=" 1200" class="form-control"required />
+    </div>
+
+        <div class="mb-3 col-md-8 col-sm-8">
+          <label for="country" class="form-label"> Country :</label>
+              <input name="listing[country]" placeholder="Nepal" type="text" class="form-control"required />
+       </div>
+    </div>
+    
+
+        <div class="mb-3">
+          <label for="location" class="form-label">Location : </label>
+          <input name="listing[location]" placeholder= "kalanki, ktm" type="text" class="form-control"required />
+       </div>
+       <br>
+    <button class="btn btn-dark add-btn">Add</button>
+</form>
+</div>
+</div>

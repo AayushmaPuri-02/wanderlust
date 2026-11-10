@@ -1,0 +1,25 @@
+const Joi = require("joi");
+//Joi validates incoming request data.
+module.exports.listingSchema = Joi.object({
+    listing: Joi.object({
+        title: Joi.string().required(),
+        description: Joi.string().required(),
+        location: Joi.string().required(),
+        country: Joi.string().required(),
+        price: Joi.number().required().min(0),
+        image: Joi.string().allow("", null),
+    }).required(),
+});
+
+module.exports.reviewSchema = Joi.object({
+    review : Joi.object({
+        rating : Joi.number().required().min(1).max(5),
+        comment: Joi.string().trim().min(1).max(500).required()
+    }).required(),
+})
+
+module.exports.userSchema = Joi.object({
+    username: Joi.string().trim().min(3).max(30).required(),
+    email: Joi.string().trim().email().required(),
+    password: Joi.string().min(8).required()
+});
