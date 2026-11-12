@@ -20,9 +20,8 @@ const listingSchema = new Schema({
         type : String,
     },
     image : {
-        type : String,
-        default : "https://images.unsplash.com/photo-1679364297777-1db77b6199be?q=80&w=3271&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=NHwxMjA3fDA%3D" ,
-        set : (v) => v ==="" ? "https://images.unsplash.com/photo-1679364297777-1db77b6199be?q=80&w=3271&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=NHwxMjA3fDA%3D" : v ,
+        url : String,
+        filename : String,       
     },
     reviews:[
         {

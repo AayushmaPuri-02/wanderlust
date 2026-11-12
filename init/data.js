@@ -349,8 +349,5 @@ const sampleListings = [
   },
 ];
 
-const formattedListings = sampleListings.map((listing) => ({
-  ...listing,
-  image: listing.image.url,
-}));
-module.exports = { data: formattedListings };
+
+module.exports = { data: sampleListings };
