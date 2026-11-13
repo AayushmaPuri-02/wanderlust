@@ -14,6 +14,7 @@ const listingsRouter = require("./routes/listings.js")
 const reviewsRouter = require("./routes/reviews.js")
 const userRouter = require("./routes/user.js")
 const session = require("express-session")
+const MongoStore = require("connect-mongo").default;
 const flash = require("connect-flash")
 
 
@@ -22,16 +23,19 @@ const LocalStrategy = require("passport-local");
 const User = require("./models/user.js")
 
 // mongoose connection
-const MONGO_URL = "mongodb://127.0.0.1:27017/wanderlust";
+// const MONGO_URL = "mongodb://127.0.0.1:27017/wanderlust";
+const dbUrl = process.env.ATLASDB_URL ;
 
 async function main() {
     try {
-        await mongoose.connect(MONGO_URL);
+        await mongoose.connect(dbUrl);
         console.log("Connected to MongoDB");
 
-        app.listen(8080, () => {
-            console.log("App is listening on port 8080");
-        });
+        const PORT = process.env.PORT || 8080;
+
+app.listen(PORT, () => {
+    console.log(`App is listening on port ${PORT}`);
+});
 
     } catch (err) {
         console.error("Database connection failed:", err);
@@ -48,7 +52,19 @@ app.use(methodOverride("_method"));
 app.engine("ejs", ejsMate);
 app.use(express.static(path.join(__dirname, "public")));
 
+const store = MongoStore.create({
+    mongoUrl : dbUrl,
+   crypto: {
+    secret: process.env.SESSION_SECRET
+},
+    touchAfter : 24 * 3600
+})
+
+store.on("error", (err) => {
+    console.error("Error in mongo session store:", err);
+});
 const sessionOptions = {
+    store,
     secret: process.env.SESSION_SECRET,
     resave : false,
     saveUninitialized : false,
@@ -60,9 +76,7 @@ const sessionOptions = {
     }
 }
 
-app.get("/", (req, res) => {
-    res.send("GET request on /");
-});
+
 
 app.use(session(sessionOptions));     // express-session middleware allows  application to maintain session data across multiple requests.
 app.use(flash());                                  //connect-flash relies on session support. - stores temporary messages in the session.

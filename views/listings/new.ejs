@@ -32,7 +32,30 @@
          <label for="image" class="form-label"> Upload Image : </label>
           <input name="listing[image]" type="file"  class="form-control" required/>
     </div>
-   
+   <!-- category  -->
+    <!-- Category -->
+<div class="mb-3">
+    <label for="category" class="form-label">Category:</label>
+
+    <select
+        name="listing[category]"
+        id="category"
+        class="form-select"
+        required
+    >
+        <option value="" selected disabled>Select a category</option>
+        <option value="Mountains">Mountains</option>
+        <option value="Beaches">Beaches</option>
+        <option value="Cities">Cities</option>
+        <option value="Camping">Camping</option>
+    </select>
+
+    <div class="invalid-feedback">
+        Please select a category.
+    </div>
+</div>
+
+
     <div class="row">
         <div class="mb-3 col-md-4 col-sm-8">
           <label for="price" class="form-label">Price : </label>

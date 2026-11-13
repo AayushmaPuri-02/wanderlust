@@ -111,4 +111,9 @@ body{
     font-size: 1.2rem;
 }
 
-
+/* MAP */
+#map { 
+    height: 400px;
+    width: 100vh;
+    border-radius: 1rem;
+ }

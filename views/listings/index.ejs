@@ -1,11 +1,110 @@
 <% layout('./layouts/boilerplate') -%>
 
-    <h1>all listings</h1>
+    <!-- <h1>all listings</h1> -->
     <!-- <form action="/listings/new" method="GET">
         <button>Create new listing</button>
     </form> -->
-    <div class="row row-cols-lg-3">
-        <% for(let listing of allListings){ %>
+    <style>
+        #filters{
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        .filter {
+    text-align: center;
+    margin-right: 2rem;
+    margin-top: 1.5rem;
+    opacity: 0.7;
+    text-decoration: none;
+    color: inherit;
+}
+.filter.active {
+
+    opacity: 1;
+    border-bottom: 2px solid #222;
+
+    font-weight: 600;
+
+}
+        .filter:hover{
+            opacity: 1;
+            cursor:pointer;
+            color : black;
+        }
+        .filter p{
+            font-size: 0.8rem;
+        }
+        .tax-info{
+            display: none;
+            font-size: small;
+        }
+        .tax-toggle{
+            border: 1px solid black;
+            border-radius: 1rem;
+            height: 3rem;
+            width: 17vw;
+            padding: 0.5rem;
+            margin-left: 42vw;
+            
+            }
+    </style>
+<div id="filters">
+
+    <!-- All Listings -->
+    <a href="/listings"
+       class="filter <%= !selectedCategory ? 'active' : '' %>">
+        <div><i class="fa-solid fa-globe"></i></div>
+        <p>All</p>
+    </a>
+
+    <!-- Mountains -->
+    <a href="/listings?category=Mountains"
+       class="filter <%= selectedCategory === 'Mountains' ? 'active' : '' %>">
+        <div><i class="fa-solid fa-mountain"></i></div>
+        <p>Mountains</p>
+    </a>
+
+    <!-- Beaches -->
+    <a href="/listings?category=Beaches"
+       class="filter <%= selectedCategory === 'Beaches' ? 'active' : '' %>">
+        <div><i class="fa-solid fa-umbrella-beach"></i></div>
+        <p>Beaches</p>
+    </a>
+
+    <!-- Cities -->
+    <a href="/listings?category=Cities"
+       class="filter <%= selectedCategory === 'Cities' ? 'active' : '' %>">
+        <div><i class="fa-solid fa-mountain-city"></i></div>
+        <p>Cities</p>
+    </a>
+
+    <!-- Camping -->
+    <a href="/listings?category=Camping"
+       class="filter <%= selectedCategory === 'Camping' ? 'active' : '' %>">
+        <div><i class="fa-solid fa-tents"></i></div>
+        <p>Camping</p>
+    </a>
+    <div class="tax-toggle">
+        <div class="form-check-reverse form-switch">
+        <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault">
+        <label class="form-check-label" for="flexSwitchCheckDefault">Display total after taxes</label>
+        </div>
+    </div>
+</div>
+
+   <div class="row row-cols-lg-3 mt-3">
+
+    <% if (allListings.length === 0) { %>
+        <div class="col-12 text-center mt-5">
+            <h4>No listings found in this category.</h4>
+            <p>Try exploring another category.</p>
+            <a href="/listings" class="btn btn-dark">
+                View All Listings
+            </a>
+        </div>
+    <% } %>
+
+    <% for(let listing of allListings){ %>
             <a href="/listings/<%=listing._id%>" class="listing-link">
                     <div class="card lisiting-card" >
                     <img src="<%= listing.image.url %>" class="card-img-top" alt="location image" style="height: 20rem;">
@@ -13,11 +112,44 @@
                     
                     <div class="card-body">
                         <p class="card-text">
-                            <b><%= listing.title %></b><br> &#8377;  <%= listing.price?.toLocaleString("en-IN") ?? "Price unavailable" %>/night
+                            <b><%= listing.title %></b><br>
+
+<% if (listing.price != null) { %>
+    &#8377;
+    <span
+        class="listing-price"
+        data-price="<%= listing.price %>"
+    >
+        <%= listing.price.toLocaleString("en-IN") %>
+    </span>
+    /night
+<% } else { %>
+    Price unavailable
+<% } %>
                         </p>
                     </div>
                     </div>
             </a>
       <% } %>
     </div>
-     
+
+
+    <script>
+    const taxSwitch = document.getElementById("flexSwitchCheckDefault");
+
+    taxSwitch.addEventListener("change", () => {
+        const prices = document.querySelectorAll(".listing-price");
+
+        prices.forEach((priceElement) => {
+            const originalPrice = Number(priceElement.dataset.price);
+
+            const displayedPrice = taxSwitch.checked
+                ? originalPrice * 1.18
+                : originalPrice;
+
+            priceElement.textContent = displayedPrice.toLocaleString("en-IN", {
+                maximumFractionDigits: 2
+            });
+        });
+    });
+</script>

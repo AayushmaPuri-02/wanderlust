@@ -62,6 +62,41 @@
                     
                 />
             </div>
+            <!-- Category -->
+<div class="mb-4">
+    <label for="category" class="form-label">Category:</label>
+
+    <select
+        id="category"
+        name="listing[category]"
+        class="form-select"
+        required
+    >
+        <option value="" disabled <%= !listing.category ? "selected" : "" %>>
+            Select a category
+        </option>
+
+        <option value="Mountains" <%= listing.category === "Mountains" ? "selected" : "" %>>
+            Mountains
+        </option>
+
+        <option value="Beaches" <%= listing.category === "Beaches" ? "selected" : "" %>>
+            Beaches
+        </option>
+
+        <option value="Cities" <%= listing.category === "Cities" ? "selected" : "" %>>
+            Cities
+        </option>
+
+        <option value="Camping" <%= listing.category === "Camping" ? "selected" : "" %>>
+            Camping
+        </option>
+    </select>
+
+    <div class="invalid-feedback">
+        Please select a category.
+    </div>
+</div>
 
             <div class="row">
 
